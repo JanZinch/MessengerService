@@ -33,7 +33,7 @@ namespace MessengerService
         {
             LogUtility.WriteLine("Service started");
             
-            _updateTimer = new Timer(LogUpdateEvent, null,UpdatePeriod, UpdatePeriod);
+            _updateTimer = new Timer(LogUpdateEvent, null, UpdatePeriod, UpdatePeriod);
         }
 
         protected override void OnPause()
@@ -45,7 +45,7 @@ namespace MessengerService
         protected override void OnContinue()
         {
             LogUtility.WriteLine("Service continued");
-            _updateTimer = new Timer(LogUpdateEvent, null,UpdatePeriod, UpdatePeriod);
+            _updateTimer = new Timer(LogUpdateEvent, null, UpdatePeriod, UpdatePeriod);
         }
 
         protected override void OnStop()

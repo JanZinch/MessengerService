@@ -5,7 +5,8 @@ namespace MessengerService.Utilities
 {
     public static class LogUtility
     {
-        private static string AppDataPath => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        //C:\ProgramData\MessengerService
+        private static string AppDataPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         private const string AppFolderName = "MessengerService";
         private const string LogsFileName = "Logs.txt";
         
@@ -30,13 +31,22 @@ namespace MessengerService.Utilities
         
         public static void WriteLine(string message)
         {
-            string fullLogsFileName = Path.Combine(_appDirectoryInfo.FullName, LogsFileName);
-            
-            using (_writer = new StreamWriter(fullLogsFileName, true))
-            {
-                _writer.WriteLine(message);
-                _writer.Flush();
+            try {
+
+                string fullLogsFileName = Path.Combine(_appDirectoryInfo.FullName, LogsFileName);
+                using (_writer = new StreamWriter(fullLogsFileName, true))
+                {
+                    _writer.WriteLine(message);
+                    _writer.Flush();
+                }
             }
+            catch (Exception ex)
+            {
+                StreamWriter file = new StreamWriter("D:\\MessengerServiceCrashReport.txt");
+                file.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                file.Close();
+            }
+    
         }
         
     }
