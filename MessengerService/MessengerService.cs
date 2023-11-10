@@ -9,14 +9,14 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MessengerService.Service;
 using MessengerService.Utilities;
 
 namespace MessengerService
 {
     public partial class MessengerService : ServiceBase
     {
-        private static readonly TimeSpan UpdatePeriod = TimeSpan.FromSeconds(1.0f);
-        private Timer _updateTimer;
+        private ServiceClient _serviceClient;
 
         public MessengerService()
         {
@@ -26,31 +26,28 @@ namespace MessengerService
             CanPauseAndContinue = true;
             AutoLog = true;
         }
-
-        private void LogUpdateEvent(object p) => LogUtility.WriteLine("Updated event");
         
         protected override void OnStart(string[] args)
         {
+            _serviceClient = new ServiceClient();
             LogUtility.WriteLine("Service started");
-            
-            _updateTimer = new Timer(LogUpdateEvent, null, UpdatePeriod, UpdatePeriod);
         }
 
         protected override void OnPause()
         {
-            _updateTimer.Dispose();
+            _serviceClient.Stop();
             LogUtility.WriteLine("Service paused");
         }
 
         protected override void OnContinue()
         {
+            _serviceClient.Start();
             LogUtility.WriteLine("Service continued");
-            _updateTimer = new Timer(LogUpdateEvent, null, UpdatePeriod, UpdatePeriod);
         }
 
         protected override void OnStop()
         {
-            _updateTimer.Dispose();
+            _serviceClient.Dispose();
             LogUtility.WriteLine("Service stopped");
         }
     }
