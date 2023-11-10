@@ -9,17 +9,15 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MessengerService.Utilities;
 
 namespace MessengerService
 {
     public partial class MessengerService : ServiceBase
     {
-        private const string LogsFilePath = "D:\\Report.txt";
         private static readonly TimeSpan UpdatePeriod = TimeSpan.FromSeconds(1.0f);
         private Timer _updateTimer;
 
-        private StreamWriter _logsWriter;
-        
         public MessengerService()
         {
             InitializeComponent();
@@ -28,21 +26,12 @@ namespace MessengerService
             CanPauseAndContinue = true;
             AutoLog = true;
         }
-        
-        private void Log(string message)
-        {
-            using (_logsWriter = new StreamWriter(LogsFilePath, true))
-            {
-                _logsWriter.WriteLine(message);
-                _logsWriter.Flush();
-            }
-        }
 
-        private void LogUpdateEvent(object p) => Log("Updated event");
+        private void LogUpdateEvent(object p) => LogUtility.WriteLine("Updated event");
         
         protected override void OnStart(string[] args)
         {
-            Log("Service started");
+            LogUtility.WriteLine("Service started");
             
             _updateTimer = new Timer(LogUpdateEvent, null,UpdatePeriod, UpdatePeriod);
         }
@@ -50,19 +39,19 @@ namespace MessengerService
         protected override void OnPause()
         {
             _updateTimer.Dispose();
-            Log("Service paused");
+            LogUtility.WriteLine("Service paused");
         }
 
         protected override void OnContinue()
         {
-            Log("Service continued");
+            LogUtility.WriteLine("Service continued");
             _updateTimer = new Timer(LogUpdateEvent, null,UpdatePeriod, UpdatePeriod);
         }
 
         protected override void OnStop()
         {
             _updateTimer.Dispose();
-            Log("Service stopped");
+            LogUtility.WriteLine("Service stopped");
         }
     }
 }

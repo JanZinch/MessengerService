@@ -12,8 +12,8 @@ namespace MessengerService
     [RunInstaller(true)]
     public partial class MessengerServiceInstaller : System.Configuration.Install.Installer
     {
-        ServiceInstaller _serviceInstaller;
-        ServiceProcessInstaller _processInstaller;
+        private ServiceInstaller _serviceInstaller;
+        private ServiceProcessInstaller _processInstaller;
 
         public MessengerServiceInstaller()
         {
