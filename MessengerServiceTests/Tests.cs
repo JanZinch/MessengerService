@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using MessengerService.Core.Infrastructure;
+using MessengerService.Core.Models;
 using MessengerService.Service;
 using MessengerService.Utilities;
 using NUnit.Framework;
@@ -13,6 +15,9 @@ namespace MessengerServiceTests
     [TestFixture]
     public class Tests
     {
+        private static readonly IEqualityComparer<Message> MessagesEqualityComparer = new MessagesEqualityComparer();
+        private IEnumerable<Message> _cachedMessages;
+        
         [Test]
         public void TestLog()
         {
@@ -20,7 +25,7 @@ namespace MessengerServiceTests
         }
 
         [Test]
-        public async Task GetAllMessages()
+        public async Task GetAllMessagesTest()
         {
             UdpClient udpClient = new UdpClient();
             IPEndPoint remotePoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
@@ -30,9 +35,9 @@ namespace MessengerServiceTests
             
             UdpReceiveResult rawResult = await udpClient.ReceiveAsync();
             Response response = Response.FromRawLine(Encoding.UTF8.GetString(rawResult.Buffer));
-
-            Console.WriteLine("Received data: " + response.JsonDataString);
             
+            Console.WriteLine("Received data: " + response.JsonDataString);
         }
+        
     }
 }
