@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MessengerService.Core.Models;
 
 namespace MessengerService.Utilities
 {
@@ -28,25 +29,20 @@ namespace MessengerService.Utilities
                 _appDirectoryInfo.Create();
             }
         }
-        
+
+        public static void WriteMessage(Message message)
+        {
+            WriteLine(string.Format("\n{0}\n{1}\n{2}\n", message.SenderNickname, message.Text, message.PostDateTime));
+        }
+
         public static void WriteLine(string message)
         {
-            try {
-
-                string fullLogsFileName = Path.Combine(_appDirectoryInfo.FullName, LogsFileName);
-                using (_writer = new StreamWriter(fullLogsFileName, true))
-                {
-                    _writer.WriteLine(message);
-                    _writer.Flush();
-                }
-            }
-            catch (Exception ex)
+            string fullLogsFileName = Path.Combine(_appDirectoryInfo.FullName, LogsFileName);
+            using (_writer = new StreamWriter(fullLogsFileName, true))
             {
-                StreamWriter file = new StreamWriter("D:\\MessengerServiceCrashReport.txt");
-                file.WriteLine(ex.Message + "\n" + ex.StackTrace);
-                file.Close();
+                _writer.WriteLine(message);
+                _writer.Flush();
             }
-    
         }
         
     }

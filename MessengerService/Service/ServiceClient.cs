@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Threading;
 using MessengerService.Core.Infrastructure;
 using MessengerService.Core.Models;
 using MessengerService.Utilities;
+using Newtonsoft.Json;
 
 namespace MessengerService.Service
 {
@@ -17,6 +19,9 @@ namespace MessengerService.Service
         
         private static readonly TimeSpan UpdatePeriod = TimeSpan.FromSeconds(1.0f);
         private Timer _updateTimer;
+        
+        private static readonly IEqualityComparer<Message> MessagesEqualityComparer = new MessagesEqualityComparer();
+        private IEnumerable<Message> _cachedMessages;
 
         public ServiceClient()
         {
@@ -31,10 +36,10 @@ namespace MessengerService.Service
     
         private void Update(object parameter)
         {
-            GetMessagesAsync(null);
+            ReceiveMessageListAsync(NotifyIfNeed);
         }
     
-        private async void GetMessagesAsync(Action<List<Message>> onCompleteCallback)
+        private async void ReceiveMessageListAsync(Action<IEnumerable<Message>> onCompleteCallback)
         {
             Query query = new Query(QueryHeader.UpdateChat);
             byte[] binaryQuery = Encoding.UTF8.GetBytes(query.ToString());
@@ -43,12 +48,30 @@ namespace MessengerService.Service
             
             UdpReceiveResult rawResult = await _udpClient.ReceiveAsync();
             Response response = Response.FromRawLine(Encoding.UTF8.GetString(rawResult.Buffer));
-
-            LogUtility.WriteLine("Received data: " + response.JsonDataString);
-            //List<Message> messagesList = JsonSerializer.Deserialize<List<Message>>(response.JsonDataString);
-            //onCompleteCallback?.Invoke(messagesList);
+            
+            IEnumerable<Message> messageList = JsonConvert.DeserializeObject<IEnumerable<Message>>(response.JsonDataString);
+            onCompleteCallback?.Invoke(messageList);
         }
-        
+
+        private void NotifyIfNeed(IEnumerable<Message> actualMessages)
+        {
+            if (_cachedMessages == null)
+            {
+                _cachedMessages = actualMessages;
+            }
+            else
+            {
+                IEnumerable<Message> newMessages = actualMessages.Except(_cachedMessages, MessagesEqualityComparer);
+                
+                foreach (Message message in newMessages)
+                {
+                    LogUtility.WriteMessage(message);
+                }
+
+                _cachedMessages = actualMessages;
+            }
+        }
+
         public void Stop()
         {
             _updateTimer?.Dispose();
