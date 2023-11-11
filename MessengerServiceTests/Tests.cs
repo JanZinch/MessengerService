@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using MessengerService.Core.Infrastructure;
-using MessengerService.Core.Models;
-using MessengerService.Service;
 using MessengerService.Utilities;
 using NUnit.Framework;
 
@@ -15,9 +12,6 @@ namespace MessengerServiceTests
     [TestFixture]
     public class Tests
     {
-        private static readonly IEqualityComparer<Message> MessagesEqualityComparer = new MessagesEqualityComparer();
-        private IEnumerable<Message> _cachedMessages;
-        
         [Test]
         public void TestLog()
         {

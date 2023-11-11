@@ -1,3 +1,6 @@
 Power shell should be executed by administrator
+
 Create service: New-Service -Name "MessengerService" -BinaryPathName D:\Documents\Work\MessengerService\MessengerService\bin\Debug\MessengerService.exe
 Delete service: sc.exe delete MessengerService
+
+Folder with results: C:\ProgramData\MessengerService

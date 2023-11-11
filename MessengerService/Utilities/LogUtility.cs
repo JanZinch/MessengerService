@@ -6,10 +6,9 @@ namespace MessengerService.Utilities
 {
     public static class LogUtility
     {
-        //C:\ProgramData\MessengerService
         private static string AppDataPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         private const string AppFolderName = "MessengerService";
-        private const string LogsFileName = "Logs.txt";
+        private const string LogsFileName = "MessengerLogs.txt";
         
         private static DirectoryInfo _appDirectoryInfo;
         private static StreamWriter _writer;

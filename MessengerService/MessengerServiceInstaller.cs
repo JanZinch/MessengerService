@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Configuration.Install;
-using System.Linq;
 using System.ServiceProcess;
-using System.Threading.Tasks;
 
 namespace MessengerService
 {
     [RunInstaller(true)]
-    public partial class MessengerServiceInstaller : System.Configuration.Install.Installer
+    public partial class MessengerServiceInstaller : Installer
     {
         private ServiceInstaller _serviceInstaller;
         private ServiceProcessInstaller _processInstaller;
@@ -22,13 +17,11 @@ namespace MessengerService
             _processInstaller = new ServiceProcessInstaller();
 
             _serviceInstaller.StartType = ServiceStartMode.Manual;
-            _serviceInstaller.ServiceName = "MessengerService";
+            _serviceInstaller.ServiceName = nameof(MessengerService);
             _processInstaller.Account = ServiceAccount.LocalSystem;
 
             Installers.Add(_processInstaller);
             Installers.Add(_serviceInstaller);
-
-
         }
     }
 }
