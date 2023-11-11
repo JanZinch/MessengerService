@@ -31,7 +31,6 @@ namespace MessengerService.Service
     
         private void Update(object parameter)
         {
-            LogUtility.WriteLine("Time to update");
             GetMessagesAsync(null);
         }
     
